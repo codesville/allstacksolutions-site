@@ -44,11 +44,11 @@
     /* NAV */
     nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--outline-light); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: center; }
     .nav-inner { max-width: var(--max-width); width: 100%; display: flex; align-items: center; justify-content: space-between; }
-    .logo { text-decoration: none; display: inline-flex; align-items: center; gap: 0; font-family: var(--font-nav); font-size: 1.25rem; letter-spacing: -0.01em; }
+    .logo { text-decoration: none; display: flex; align-items: center; gap: 0; font-family: var(--font-nav); font-size: 1.25rem; letter-spacing: -0.01em; }
     .logo-all { font-weight: 700; color: #3a3a3a; }
     .logo-stack { font-weight: 700; color: #5a5a5a; }
-    .logo-cube { display: inline-flex; align-items: center; justify-content: center; margin: 0 4px; }
-    .logo-cube svg { width: 26px; height: 26px; }
+    .logo-icon { display: inline-flex; align-items: center; justify-content: center; margin: 0 3px; width: 24px; height: 24px; background: linear-gradient(135deg, #2ABFBF, #1A73E8); border-radius: 5px; position: relative; }
+    .logo-icon svg { width: 14px; height: 14px; }
     .logo-solutions { font-weight: 400; color: #6a6a6a; }
     .nav-links { display: flex; gap: 4px; list-style: none; align-items: center; }
     .nav-links a { font-family: var(--font-nav); font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; padding: 8px 16px; border-radius: 100px; transition: all 0.2s ease; }
@@ -230,11 +230,7 @@
 
   <nav>
     <div class="nav-inner">
-      <a href="#" class="logo">
-        <span class="logo-all">All</span><span class="logo-stack">Stack</span>
-        <span class="logo-cube"><svg><use href="#stacked-cube"/></svg></span>
-        <span class="logo-solutions">Solutions</span>
-      </a>
+      <a href="#" class="logo"><span class="logo-all">All</span><span class="logo-stack">Stack</span><span class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span><span class="logo-solutions">Solutions</span></a>
       <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#202124" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
@@ -252,8 +248,7 @@
     <div class="hero-bg"></div>
     <div class="hero-content">
       <div class="hero-chip">
-        <div class="hero-chip-dot"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-        Available for engagements
+        
       </div>
       <h1>Intelligent automation for <strong>cloud, DevOps &amp; AI</strong></h1>
       <p>AllStack Solutions helps government agencies and regulated enterprises modernize infrastructure with agentic AI, cloud-native architecture, and DevOps automation.</p>
@@ -442,11 +437,7 @@
   <footer>
     <div class="footer-inner">
       <div class="footer-left">
-        <span class="footer-logo">
-          <span class="logo-all">All</span><span class="logo-stack">Stack</span>
-          <span class="logo-cube"><svg><use href="#stacked-cube"/></svg></span>
-          <span class="logo-solutions">Solutions</span>
-        </span>
+        <img src="images/logo.png" alt="AllStack Solutions" class="footer-logo" style="display:none;"><span class="footer-logo"><span class="logo-all">All</span><span class="logo-stack">Stack</span><span class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span><span class="logo-solutions">Solutions</span></span>
         <p>&copy; 2026 AllStack Solutions LLC. All rights reserved.</p>
       </div>
       <a href="#">Privacy Policy</a>
