@@ -122,6 +122,7 @@
   .ai-input { flex: 1; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; font-family: var(--font-body); font-size: 14px; color: var(--text-bright); outline: none; transition: border-color 0.2s; }
   .ai-input::placeholder { color: var(--muted); }
   .ai-input:focus { border-color: var(--plasma); }
+  .ai-input:disabled { opacity: 0.5; cursor: not-allowed; }
   .ai-send { background: var(--plasma); color: var(--void); border: none; border-radius: 8px; padding: 10px 16px; font-weight: 600; font-size: 13px; cursor: pointer; font-family: var(--font-body); }
 
   /* MODAL */
@@ -193,17 +194,173 @@
   .typing-dot:nth-child(3) { animation-delay: 0.4s; }
   @keyframes blink { 0%,100% { opacity:0.3; transform:translateY(0); } 50% { opacity:1; transform:translateY(-3px); } }
 
+  /* ── XP SYSTEM ── */
+  .xp-bar-wrap { display: flex; align-items: center; gap: 10px; }
+  .xp-level-badge { background: linear-gradient(135deg, var(--amber), #f59e0b); color: var(--void); font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; white-space: nowrap; cursor: pointer; transition: transform 0.15s; }
+  .xp-level-badge:hover { transform: scale(1.05); }
+  .xp-track { width: 90px; height: 6px; background: var(--panel); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
+  .xp-fill { height: 100%; background: linear-gradient(90deg, var(--amber), #f59e0b); border-radius: 3px; transition: width 0.5s ease; }
+  .xp-label { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); white-space: nowrap; }
+  .xp-shop-btn { background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.3); color: var(--amber); padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font-body); transition: all 0.2s; white-space: nowrap; }
+  .xp-shop-btn:hover { background: rgba(251,191,36,0.22); }
+
+  /* XP toast */
+  .xp-toast { position: fixed; bottom: 32px; right: 32px; z-index: 500; background: var(--panel); border: 1px solid rgba(251,191,36,0.4); border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; gap: 12px; transform: translateY(80px); opacity: 0; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none; }
+  .xp-toast.show { transform: translateY(0); opacity: 1; }
+  .xp-toast-icon { font-size: 24px; }
+  .xp-toast-text { font-size: 13px; color: var(--text-bright); font-weight: 500; }
+  .xp-toast-amount { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: var(--amber); }
+
+  /* XP level-up splash */
+  .levelup-splash { position: fixed; inset: 0; z-index: 600; display: flex; align-items: center; justify-content: center; background: rgba(8,12,20,0.85); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+  .levelup-splash.show { opacity: 1; pointer-events: auto; }
+  .levelup-card { background: var(--surface); border: 1px solid rgba(251,191,36,0.4); border-radius: 20px; padding: 48px 56px; text-align: center; transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+  .levelup-splash.show .levelup-card { transform: scale(1); }
+
+  /* XP store modal */
+  .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-top: 4px; }
+  .store-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: all 0.2s; position: relative; overflow: hidden; }
+  .store-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent, var(--amber)); transform: scaleX(0); transition: transform 0.3s; }
+  .store-card:hover::before { transform: scaleX(1); }
+  .store-card.unlocked { border-color: var(--emerald); opacity: 0.6; }
+  .store-card.unlocked::before { background: var(--emerald); transform: scaleX(1); }
+  .store-card.cant-afford { opacity: 0.45; }
+  .store-card h4 { font-size: 14px; font-weight: 600; color: var(--text-bright); margin-bottom: 4px; }
+  .store-card p { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 14px; }
+  .store-cost { display: flex; align-items: center; justify-content: space-between; }
+  .store-price { font-family: var(--font-mono); font-size: 13px; color: var(--amber); font-weight: 600; }
+  .store-buy-btn { background: var(--amber); color: var(--void); border: none; padding: 6px 16px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: var(--font-body); transition: opacity 0.2s; }
+  .store-buy-btn:hover { opacity: 0.85; }
+  .store-buy-btn:disabled { background: var(--muted); color: var(--text-dim); cursor: not-allowed; opacity: 1; }
+  .store-unlocked-tag { font-family: var(--font-mono); font-size: 11px; color: var(--emerald); }
+
+  /* ── LOGIN SCREEN ── */
+  .login-screen { position: fixed; inset: 0; z-index: 9999; background: var(--void); display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 1; transition: opacity 0.6s ease; pointer-events: auto; }
+  .login-screen.hidden { opacity: 0; pointer-events: none; }
+  .login-screen.gone { display: none; }
+  /* app is always rendered — login screen sits on top until dismissed */
+  .login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; width: 100%; max-width: 420px; overflow: hidden; }
+  .login-header { padding: 36px 36px 28px; text-align: center; border-bottom: 1px solid var(--border); }
+  .login-logo { font-family: var(--font-display); font-size: 28px; color: var(--text-bright); display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 8px; }
+  .login-logo .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--plasma); box-shadow: 0 0 14px var(--plasma); animation: pulse 2s ease-in-out infinite; }
+  .login-tagline { font-size: 13px; color: var(--text-dim); }
+  .login-body { padding: 28px 36px 36px; }
+  .login-tabs { display: flex; gap: 4px; background: var(--panel); border-radius: 8px; padding: 4px; margin-bottom: 24px; }
+  .login-tab { flex: 1; padding: 8px; border-radius: 6px; border: none; background: transparent; color: var(--text-dim); font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .login-tab.active { background: var(--surface); color: var(--text-bright); }
+  .login-pane { display: none; }
+  .login-pane.active { display: block; }
+  .login-field { margin-bottom: 16px; }
+  .login-field label { display: block; font-size: 11px; font-family: var(--font-mono); color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .login-input { width: 100%; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 11px 14px; font-family: var(--font-body); font-size: 14px; color: var(--text-bright); outline: none; transition: border-color 0.2s; }
+  .login-input:focus { border-color: var(--plasma); }
+  .login-input::placeholder { color: var(--muted); }
+  .login-submit { width: 100%; background: var(--plasma); color: var(--void); border: none; border-radius: 8px; padding: 12px; font-family: var(--font-body); font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-top: 4px; }
+  .login-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79,195,247,0.3); }
+  .login-submit:active { transform: none; }
+  .login-error { background: rgba(251,113,133,0.1); border: 1px solid rgba(251,113,133,0.3); color: var(--rose); border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 14px; display: none; }
+  .login-error.show { display: block; }
+  .login-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+  .login-divider::before, .login-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .login-divider span { font-size: 12px; color: var(--muted); }
+  .login-guest { width: 100%; background: transparent; border: 1px solid var(--border); color: var(--text-dim); border-radius: 8px; padding: 11px; font-family: var(--font-body); font-size: 14px; cursor: pointer; transition: all 0.2s; }
+  .login-guest:hover { border-color: var(--muted); color: var(--text-bright); }
+  .login-footer { font-size: 11px; color: var(--muted); text-align: center; margin-top: 20px; }
+
+  /* User chip in nav */
+  .user-chip { display: flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px 5px 6px; cursor: pointer; transition: border-color 0.2s; }
+  .user-chip:hover { border-color: var(--muted); }
+  .user-avatar { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--void); flex-shrink: 0; }
+  .user-name { font-size: 13px; font-weight: 500; color: var(--text-bright); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* User dropdown */
+  .user-dropdown { position: absolute; top: 60px; right: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; min-width: 200px; overflow: hidden; z-index: 200; box-shadow: 0 8px 32px rgba(0,0,0,0.4); display: none; }
+  .user-dropdown.open { display: block; }
+  .user-dropdown-header { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+  .user-dropdown-name { font-weight: 600; color: var(--text-bright); font-size: 14px; }
+  .user-dropdown-email { font-size: 11px; color: var(--text-dim); margin-top: 2px; font-family: var(--font-mono); }
+  .user-dropdown-item { padding: 10px 16px; font-size: 13px; color: var(--text-dim); cursor: pointer; transition: background 0.15s; display: flex; align-items: center; gap: 8px; }
+  .user-dropdown-item:hover { background: var(--panel); color: var(--text-bright); }
+  .user-dropdown-item.danger { color: var(--rose); }
+  .user-dropdown-item.danger:hover { background: rgba(251,113,133,0.08); }
+
   @media (max-width: 600px) {
     nav { padding: 12px 16px; }
     .nav-links { display: none; }
     .hero-stats { flex-direction: column; gap: 20px; }
     .cta-band { padding: 40px 24px; margin: 20px 16px 60px; }
+    .login-body { padding: 24px 20px 28px; }
+    .login-header { padding: 28px 20px 20px; }
   }
 </style>
 </head>
 <body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-logo"><div class="dot"></div>SciQuest</div>
+      <div class="login-tagline">AI-powered science learning for every grade</div>
+    </div>
+    <div class="login-body">
+      <div class="login-tabs">
+        <button class="login-tab active" onclick="switchLoginTab('signin',this)">Sign In</button>
+        <button class="login-tab" onclick="switchLoginTab('signup',this)">Create Account</button>
+      </div>
+
+      <!-- SIGN IN -->
+      <div class="login-pane active" id="lpane-signin">
+        <div class="login-error" id="signin-error"></div>
+        <div class="login-field">
+          <label>Username or Email</label>
+          <input class="login-input" id="signin-user" type="text" placeholder="Enter your username" autocomplete="username" onkeydown="if(event.key==='Enter')doSignIn()" />
+        </div>
+        <div class="login-field">
+          <label>Password</label>
+          <input class="login-input" id="signin-pass" type="password" placeholder="Enter your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doSignIn()" />
+        </div>
+        <button class="login-submit" onclick="doSignIn()">Sign In →</button>
+        <div class="login-divider"><span>or</span></div>
+        <button class="login-guest" onclick="doGuest()">Continue as Guest</button>
+        <div class="login-footer">Progress is saved locally per device. No data is sent to a server.</div>
+      </div>
+
+      <!-- SIGN UP -->
+      <div class="login-pane" id="lpane-signup">
+        <div class="login-error" id="signup-error"></div>
+        <div class="login-field">
+          <label>Display Name</label>
+          <input class="login-input" id="signup-name" type="text" placeholder="How should we call you?" autocomplete="name" onkeydown="if(event.key==='Enter')doSignUp()" />
+        </div>
+        <div class="login-field">
+          <label>Username</label>
+          <input class="login-input" id="signup-user" type="text" placeholder="Pick a username" autocomplete="username" onkeydown="if(event.key==='Enter')doSignUp()" />
+        </div>
+        <div class="login-field">
+          <label>Password</label>
+          <input class="login-input" id="signup-pass" type="password" placeholder="Choose a password (min 6 chars)" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignUp()" />
+        </div>
+        <div class="login-field">
+          <label>Grade Level</label>
+          <select class="login-input" id="signup-grade" style="cursor:pointer">
+            <option value="">Select your grade…</option>
+            <option value="k-5">Elementary (K–5)</option>
+            <option value="6-8">Middle School (6–8)</option>
+            <option value="9-10">High School (9–10)</option>
+            <option value="11-12">High School (11–12)</option>
+            <option value="college">College</option>
+          </select>
+        </div>
+        <button class="login-submit" onclick="doSignUp()">Create Account →</button>
+        <div class="login-footer">All data stays on your device in localStorage. No account server is involved.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <canvas id="starfield"></canvas>
-<div class="app">
+<div class="app" id="main-app" style="display:none">
 
 <!-- NAV -->
 <nav>
@@ -212,9 +369,74 @@
     <a onclick="document.getElementById('courses').scrollIntoView({behavior:'smooth'})">Courses</a>
     <a onclick="document.getElementById('ai-tutor').scrollIntoView({behavior:'smooth'})">AI Tutor</a>
     <a onclick="document.getElementById('labs').scrollIntoView({behavior:'smooth'})">Labs</a>
-    <button class="nav-cta" onclick="document.getElementById('courses').scrollIntoView({behavior:'smooth'})">Start Learning</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;position:relative">
+    <div class="xp-bar-wrap">
+      <div class="xp-level-badge" id="nav-level" onclick="openStore()">Lv 1</div>
+      <div>
+        <div class="xp-track"><div class="xp-fill" id="nav-xp-fill" style="width:0%"></div></div>
+        <div class="xp-label" id="nav-xp-label">0 / 100 XP</div>
+      </div>
+      <button class="xp-shop-btn" onclick="openStore()">⚗️ Store</button>
+    </div>
+    <div class="user-chip" id="user-chip" onclick="toggleUserDropdown()">
+      <div class="user-avatar" id="user-avatar" style="background:var(--plasma)">?</div>
+      <span class="user-name" id="user-chip-name">Guest</span>
+    </div>
+    <div class="user-dropdown" id="user-dropdown">
+      <div class="user-dropdown-header">
+        <div class="user-dropdown-name" id="dd-name">Guest</div>
+        <div class="user-dropdown-email" id="dd-sub">Playing as guest</div>
+      </div>
+      <div class="user-dropdown-item" onclick="openStore();toggleUserDropdown()">⚗️ XP Store</div>
+      <div class="user-dropdown-item" onclick="showProfileStats();toggleUserDropdown()">📊 My Stats</div>
+      <div class="user-dropdown-item danger" onclick="resetProgress();toggleUserDropdown()">🔄 Reset Progress</div>
+      <div class="user-dropdown-item danger" onclick="doLogout()">↩ Sign Out</div>
+    </div>
   </div>
 </nav>
+
+<!-- XP TOAST -->
+<div class="xp-toast" id="xp-toast">
+  <div class="xp-toast-icon">⭐</div>
+  <div>
+    <div class="xp-toast-amount" id="xp-toast-amount">+50 XP</div>
+    <div class="xp-toast-text" id="xp-toast-text">Quiz complete!</div>
+  </div>
+</div>
+
+<!-- LEVEL UP SPLASH -->
+<div class="levelup-splash" id="levelup-splash" onclick="this.classList.remove('show')">
+  <div class="levelup-card">
+    <div style="font-size:56px;margin-bottom:8px">🎉</div>
+    <div style="font-family:var(--font-mono);font-size:12px;color:var(--amber);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Level Up!</div>
+    <div style="font-family:var(--font-display);font-size:48px;color:var(--text-bright);margin-bottom:8px" id="levelup-num">Level 2</div>
+    <div style="font-size:14px;color:var(--text-dim);margin-bottom:24px" id="levelup-sub">You've earned more XP to spend in the store!</div>
+    <button onclick="document.getElementById('levelup-splash').classList.remove('show');openStore()" style="background:var(--amber);color:var(--void);border:none;padding:12px 28px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--font-body)">⚗️ Open Store</button>
+  </div>
+</div>
+
+<!-- XP STORE MODAL -->
+<div class="modal-overlay" id="store-modal" onclick="if(event.target===this)closeModal('store-modal')">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-head">
+      <div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--amber);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">XP Store</div>
+        <div style="font-weight:600;color:var(--text-bright);font-size:16px">Spend your XP to unlock lessons</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="text-align:right">
+          <div style="font-family:var(--font-mono);font-size:20px;color:var(--amber);font-weight:700" id="store-xp-display">0 XP</div>
+          <div style="font-size:11px;color:var(--text-dim)">available</div>
+        </div>
+        <button class="modal-close" onclick="closeModal('store-modal')">✕</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div id="store-grid" class="store-grid"></div>
+    </div>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -264,9 +486,9 @@
       <div class="lesson-card" data-grade="6-8" style="--accent:#4fc3f7" onclick="openLesson('physics','units')"><div class="lcard-top"><span class="lcard-num">02</span><span class="lcard-status">✅</span></div><h4>Measurement & Units</h4><p>SI units, significant figures, and scientific precision.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 6–8</span></div></div>
       <div class="lesson-card" data-grade="9-10" style="--accent:#4fc3f7" onclick="openLesson('physics','kinematics')"><div class="lcard-top"><span class="lcard-num">03</span><span class="lcard-status">✅</span></div><h4>Kinematics</h4><p>Describing motion with position, velocity, and acceleration.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 9–10</span></div></div>
       <div class="lesson-card" data-grade="9-10" style="--accent:#4fc3f7" onclick="openLesson('physics','newton')"><div class="lcard-top"><span class="lcard-num">04</span><span class="lcard-status">▶</span></div><h4>Newton's Laws</h4><p>Three laws that explain how forces affect object motion.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 9–10</span></div></div>
-      <div class="lesson-card locked" data-grade="11-12" style="--accent:#4fc3f7"><div class="lcard-top"><span class="lcard-num">05</span><span class="lcard-status">🔒</span></div><h4>Work & Energy</h4><p>The relationship between force, displacement, and energy transfer.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
-      <div class="lesson-card locked" data-grade="11-12" style="--accent:#4fc3f7"><div class="lcard-top"><span class="lcard-num">06</span><span class="lcard-status">🔒</span></div><h4>Waves & Oscillations</h4><p>Wave properties, superposition, and resonance.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
-      <div class="lesson-card locked" data-grade="college" style="--accent:#4fc3f7"><div class="lcard-top"><span class="lcard-num">07</span><span class="lcard-status">🔒</span></div><h4>Electricity & Magnetism</h4><p>Charge, fields, circuits, and the electromagnetic force.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">College</span></div></div>
+      <div class="lesson-card locked" data-lesson-id="physics-work" data-grade="11-12" style="--accent:#4fc3f7"><div class="lcard-top"><span class="lcard-num">05</span><span class="lcard-status">🔒</span></div><h4>Work & Energy</h4><p>The relationship between force, displacement, and energy transfer.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
+      <div class="lesson-card locked" data-lesson-id="physics-waves" data-grade="11-12" style="--accent:#4fc3f7"><div class="lcard-top"><span class="lcard-num">06</span><span class="lcard-status">🔒</span></div><h4>Waves & Oscillations</h4><p>Wave properties, superposition, and resonance.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
+      <div class="lesson-card locked" data-lesson-id="physics-electricity" data-grade="college" style="--accent:#4fc3f7"><div class="lcard-top"><span class="lcard-num">07</span><span class="lcard-status">🔒</span></div><h4>Electricity & Magnetism</h4><p>Charge, fields, circuits, and the electromagnetic force.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">College</span></div></div>
     </div>
   </div>
 
@@ -280,9 +502,9 @@
       <div class="lesson-card" data-grade="9-10" style="--accent:#34d399" onclick="openLesson('chemistry','periodic')"><div class="lcard-top"><span class="lcard-num">02</span><span class="lcard-status">🔓</span></div><h4>The Periodic Table</h4><p>Periods, groups, trends, and why elements behave as they do.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 9–10</span></div></div>
       <div class="lesson-card" data-grade="9-10" style="--accent:#34d399" onclick="openLesson('chemistry','bonding')"><div class="lcard-top"><span class="lcard-num">03</span><span class="lcard-status">🔓</span></div><h4>Chemical Bonding</h4><p>Ionic, covalent, and metallic bonds — how atoms connect.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 9–10</span></div></div>
       <div class="lesson-card" data-grade="9-10" style="--accent:#34d399" onclick="openLesson('chemistry','reactions')"><div class="lcard-top"><span class="lcard-num">04</span><span class="lcard-status">🔓</span></div><h4>Chemical Reactions</h4><p>Balancing equations, reaction types, and energy changes.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 9–10</span></div></div>
-      <div class="lesson-card" data-grade="11-12" style="--accent:#34d399" onclick="openLesson('chemistry','stoich')"><div class="lcard-top"><span class="lcard-num">05</span><span class="lcard-status">🔓</span></div><h4>Stoichiometry</h4><p>Moles, molar mass, and quantitative reaction calculations.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
+      <div class="lesson-card locked" data-lesson-id="chemistry-stoich" data-grade="11-12" style="--accent:#34d399"><div class="lcard-top"><span class="lcard-num">05</span><span class="lcard-status">🔒</span></div><h4>Stoichiometry</h4><p>Moles, molar mass, and quantitative reaction calculations.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
       <div class="lesson-card" data-grade="11-12" style="--accent:#34d399" onclick="openLesson('chemistry','acids')"><div class="lcard-top"><span class="lcard-num">06</span><span class="lcard-status">🔓</span></div><h4>Acids, Bases & pH</h4><p>The pH scale, neutralization reactions, and buffers.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
-      <div class="lesson-card" data-grade="college" style="--accent:#34d399" onclick="openLesson('chemistry','thermo')"><div class="lcard-top"><span class="lcard-num">07</span><span class="lcard-status">🔓</span></div><h4>Thermochemistry</h4><p>Enthalpy, Hess's law, and calorimetry experiments.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">College</span></div></div>
+      <div class="lesson-card locked" data-lesson-id="chemistry-thermo" data-grade="college" style="--accent:#34d399"><div class="lcard-top"><span class="lcard-num">07</span><span class="lcard-status">🔒</span></div><h4>Thermochemistry</h4><p>Enthalpy, Hess's law, and calorimetry experiments.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">College</span></div></div>
     </div>
   </div>
 
@@ -296,8 +518,8 @@
       <div class="lesson-card" data-grade="6-8" style="--accent:#a78bfa" onclick="openLesson('biology','dna')"><div class="lcard-top"><span class="lcard-num">02</span><span class="lcard-status">🔓</span></div><h4>DNA & Genetics</h4><p>The double helix, base pairing, and how traits are inherited.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 6–8</span></div></div>
       <div class="lesson-card" data-grade="9-10" style="--accent:#a78bfa" onclick="openLesson('biology','photosynthesis')"><div class="lcard-top"><span class="lcard-num">03</span><span class="lcard-status">🔓</span></div><h4>Photosynthesis</h4><p>How plants convert sunlight into chemical energy using chlorophyll.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 9–10</span></div></div>
       <div class="lesson-card" data-grade="9-10" style="--accent:#a78bfa" onclick="openLesson('biology','evolution')"><div class="lcard-top"><span class="lcard-num">04</span><span class="lcard-status">🔓</span></div><h4>Evolution & Natural Selection</h4><p>Darwin's theory, adaptation, speciation, and the fossil record.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 9–10</span></div></div>
-      <div class="lesson-card" data-grade="11-12" style="--accent:#a78bfa" onclick="openLesson('biology','ecology')"><div class="lcard-top"><span class="lcard-num">05</span><span class="lcard-status">🔓</span></div><h4>Ecosystems & Food Webs</h4><p>Energy flow, trophic levels, and nutrient cycling in ecosystems.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
-      <div class="lesson-card" data-grade="college" style="--accent:#a78bfa" onclick="openLesson('biology','mitosis')"><div class="lcard-top"><span class="lcard-num">06</span><span class="lcard-status">🔓</span></div><h4>Mitosis & Meiosis</h4><p>Cell division cycles, chromosome behavior, and reproduction.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">College</span></div></div>
+      <div class="lesson-card locked" data-lesson-id="biology-ecology" data-grade="11-12" style="--accent:#a78bfa"><div class="lcard-top"><span class="lcard-num">05</span><span class="lcard-status">🔒</span></div><h4>Ecosystems & Food Webs</h4><p>Energy flow, trophic levels, and nutrient cycling in ecosystems.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
+      <div class="lesson-card locked" data-lesson-id="biology-mitosis" data-grade="college" style="--accent:#a78bfa"><div class="lcard-top"><span class="lcard-num">06</span><span class="lcard-status">🔒</span></div><h4>Mitosis & Meiosis</h4><p>Cell division cycles, chromosome behavior, and reproduction.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">College</span></div></div>
     </div>
   </div>
 
@@ -310,11 +532,11 @@
       <div class="lesson-card" data-grade="6-8" style="--accent:#fb923c" onclick="openLesson('cs','binary')"><div class="lcard-top"><span class="lcard-num">01</span><span class="lcard-status">🔓</span></div><h4>Binary & Number Systems</h4><p>How computers represent data using 0s and 1s — binary, hex, and beyond.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 6–8</span></div></div>
       <div class="lesson-card" data-grade="9-10" style="--accent:#fb923c" onclick="openLesson('cs','logic')"><div class="lcard-top"><span class="lcard-num">02</span><span class="lcard-status">🔓</span></div><h4>Logic Gates & Boolean Algebra</h4><p>AND, OR, NOT, XOR — the building blocks of all digital circuits.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 9–10</span></div></div>
       <div class="lesson-card" data-grade="9-10" style="--accent:#fb923c" onclick="openLesson('cs','algorithms')"><div class="lcard-top"><span class="lcard-num">03</span><span class="lcard-status">🔓</span></div><h4>Algorithms & Complexity</h4><p>What makes an algorithm efficient? Big-O notation and sorting strategies.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 9–10</span></div></div>
-      <div class="lesson-card" data-grade="11-12" style="--accent:#fb923c" onclick="openLesson('cs','datastructs')"><div class="lcard-top"><span class="lcard-num">04</span><span class="lcard-status">🔓</span></div><h4>Data Structures</h4><p>Arrays, linked lists, stacks, queues, trees — how data is organized and accessed.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
-      <div class="lesson-card" data-grade="11-12" style="--accent:#fb923c" onclick="openLesson('cs','networking')"><div class="lcard-top"><span class="lcard-num">05</span><span class="lcard-status">🔓</span></div><h4>Networking & the Internet</h4><p>IP, TCP, DNS, HTTP — how data travels from one computer to another.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
-      <div class="lesson-card" data-grade="11-12" style="--accent:#fb923c" onclick="openLesson('cs','os')"><div class="lcard-top"><span class="lcard-num">06</span><span class="lcard-status">🔓</span></div><h4>Operating Systems</h4><p>Processes, memory management, file systems, and the kernel.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
-      <div class="lesson-card" data-grade="college" style="--accent:#fb923c" onclick="openLesson('cs','ai')"><div class="lcard-top"><span class="lcard-num">07</span><span class="lcard-status">🔓</span></div><h4>Intro to AI & Machine Learning</h4><p>How machines learn from data — training, models, and neural network basics.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">College</span></div></div>
-      <div class="lesson-card" data-grade="college" style="--accent:#fb923c" onclick="openLesson('cs','security')"><div class="lcard-top"><span class="lcard-num">08</span><span class="lcard-status">🔓</span></div><h4>Cybersecurity Fundamentals</h4><p>Encryption, hashing, authentication, and how attackers think.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">College</span></div></div>
+      <div class="lesson-card locked" data-lesson-id="cs-datastructs" data-grade="11-12" style="--accent:#fb923c"><div class="lcard-top"><span class="lcard-num">04</span><span class="lcard-status">🔒</span></div><h4>Data Structures</h4><p>Arrays, linked lists, stacks, queues, trees — how data is organized and accessed.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
+      <div class="lesson-card locked" data-lesson-id="cs-networking" data-grade="11-12" style="--accent:#fb923c"><div class="lcard-top"><span class="lcard-num">05</span><span class="lcard-status">🔒</span></div><h4>Networking & the Internet</h4><p>IP, TCP, DNS, HTTP — how data travels from one computer to another.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
+      <div class="lesson-card locked" data-lesson-id="cs-os" data-grade="11-12" style="--accent:#fb923c"><div class="lcard-top"><span class="lcard-num">06</span><span class="lcard-status">🔒</span></div><h4>Operating Systems</h4><p>Processes, memory management, file systems, and the kernel.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">Gr 11–12</span></div></div>
+      <div class="lesson-card locked" data-lesson-id="cs-ai" data-grade="college" style="--accent:#fb923c"><div class="lcard-top"><span class="lcard-num">07</span><span class="lcard-status">🔒</span></div><h4>Intro to AI & Machine Learning</h4><p>How machines learn from data — training, models, and neural network basics.</p><div class="lcard-badges"><span class="lcard-badge badge-sim">Lab Sim</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">College</span></div></div>
+      <div class="lesson-card locked" data-lesson-id="cs-security" data-grade="college" style="--accent:#fb923c"><div class="lcard-top"><span class="lcard-num">08</span><span class="lcard-status">🔒</span></div><h4>Cybersecurity Fundamentals</h4><p>Encryption, hashing, authentication, and how attackers think.</p><div class="lcard-badges"><span class="lcard-badge badge-reading">Reading</span><span class="lcard-badge badge-quiz">Quiz</span><span class="grade-badge">College</span></div></div>
     </div>
   </div>
 </section>
@@ -476,24 +698,34 @@
 </div>
 
 <script>
+try {
+
 // ── STARFIELD ──
 const canvas = document.getElementById('starfield');
-const ctx = canvas.getContext('2d');
+const ctx = canvas ? canvas.getContext('2d') : null;
 let stars = [];
 function initStars() {
+  if (!canvas || !ctx) return;
   canvas.width = window.innerWidth; canvas.height = window.innerHeight; stars = [];
   for (let i = 0; i < 180; i++) stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.2+0.2, o: Math.random()*0.6+0.1, s: (Math.random()-0.5)*0.05 });
 }
 function drawStars() {
+  if (!canvas || !ctx) return;
   ctx.clearRect(0,0,canvas.width,canvas.height);
   stars.forEach(s => { s.o+=s.s; if(s.o<=0.05||s.o>=0.8) s.s*=-1; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fillStyle=`rgba(180,210,255,${s.o})`; ctx.fill(); });
   requestAnimationFrame(drawStars);
 }
-initStars(); drawStars(); window.addEventListener('resize', initStars);
+try { initStars(); drawStars(); } catch(e) { console.warn('Starfield error:', e); }
+window.addEventListener('resize', () => { try { initStars(); } catch(e) {} });
 
 // ── SCROLL REVEAL ──
-const observer = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); }), { threshold: 0.12 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+try {
+  const observer = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); }), { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+} catch(e) {
+  // IntersectionObserver not available — just show all reveal elements
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+}
 
 // ── TRACK TABS ──
 let activeGrade = 'all';
@@ -552,7 +784,7 @@ function switchModalTab(tab, btn) {
 }
 
 // ── LESSON DATA ──
-const lessonData = {
+const lessonData = window.lessonData = {
   // ── K–5 PHYSICS ──
   'physics-work': {
     track: 'Physics · Lesson 5', title: 'Work, Energy & Power', grade: 'Gr 11–12',
@@ -945,6 +1177,54 @@ const lessonData = {
     ]
   },
 
+  'chemistry-bonding': {
+    track: 'Chemistry · Lesson 3', title: 'Chemical Bonding', grade: 'Gr 9–10',
+    reading: `<h3>How Atoms Stick Together</h3>
+      <p>Atoms bond together to form molecules and compounds because doing so lowers their energy — bonded atoms are more stable than isolated ones. The type of bond that forms depends on the electronegativity difference between the atoms involved.</p>
+      <div class="callout" style="--accent:#34d399">💡 Linus Pauling introduced the electronegativity scale in 1932. He won two Nobel Prizes — one in Chemistry for his work on chemical bonds, and one in Peace — making him the only person to win two unshared Nobel Prizes.</div>
+      <p><strong>Ionic bonds</strong> form when one atom transfers electrons to another. This happens between metals (low electronegativity — happy to give electrons) and non-metals (high electronegativity — eager to take them). The result is oppositely charged ions that attract each other strongly. Sodium chloride (table salt, NaCl) is the classic example: Na gives one electron to Cl, forming Na⁺ and Cl⁻.</p>
+      <p><strong>Covalent bonds</strong> form when atoms share electrons rather than transfer them. This happens between non-metals with similar electronegativities. In water (H₂O), each hydrogen shares one electron pair with oxygen. In oxygen gas (O₂), two oxygen atoms share two pairs — a double bond. In nitrogen gas (N₂), three pairs are shared — a triple bond, one of the strongest in chemistry.</p>
+      <div class="formula">Electronegativity difference: &lt;0.5 → nonpolar covalent | 0.5–1.7 → polar covalent | &gt;1.7 → ionic</div>
+      <p><strong>Polar covalent bonds</strong> occur when electrons are shared unequally — the more electronegative atom pulls the shared electrons closer, gaining a partial negative charge (δ−) while the other gains a partial positive charge (δ+). Water is strongly polar, which is why it's such an exceptional solvent.</p>
+      <p><strong>Metallic bonds</strong> hold metal atoms together. Metal atoms release their valence electrons into a shared "sea of electrons" that flows freely through the structure. This explains metals' defining properties: electrical conductivity (electrons flow), thermal conductivity (electrons transfer heat), malleability (layers slide without breaking bonds), and metallic lustre (free electrons reflect light).</p>
+      <p><strong>Intermolecular forces</strong> — weaker than covalent or ionic bonds — act between molecules. Hydrogen bonds (between molecules containing N–H, O–H, or F–H) are the strongest, responsible for water's unusually high boiling point. Van der Waals forces (London dispersion) exist between all molecules and increase with molecular size.</p>`,
+    quiz: [
+      { q: "Which type of bond involves the complete transfer of electrons?", opts: ["Covalent","Metallic","Ionic","Hydrogen"], correct: 2, explain: "Ionic bonds form when a metal transfers electrons to a non-metal, creating oppositely charged ions that attract each other." },
+      { q: "Water (H₂O) has polar covalent bonds because…", opts: ["Hydrogen has more electrons than oxygen","Oxygen is more electronegative and pulls shared electrons closer","The bonds are broken easily","Hydrogen transfers electrons to oxygen"], correct: 1, explain: "Oxygen's high electronegativity (3.44 vs H's 2.20) pulls the shared electrons toward itself, giving O a δ− charge and H a δ+ charge." },
+      { q: "What electronegativity difference typically indicates an ionic bond?", opts: ["Less than 0.5","Between 0.5 and 1.7","Greater than 1.7","Exactly 1.0"], correct: 2, explain: "A difference greater than ~1.7 on the Pauling scale means one atom dominates electron sharing so strongly it amounts to a transfer — an ionic bond." },
+      { q: "Why are metals good electrical conductors?", opts: ["They have very large atoms","Their valence electrons move freely in a shared electron sea","Their ionic bonds are weak","They contain many neutrons"], correct: 1, explain: "In metallic bonding, valence electrons are delocalised — free to move through the structure, carrying charge as electric current." },
+      { q: "N₂ has a triple bond. What does this mean?", opts: ["Three nitrogen atoms are bonded","Three pairs of electrons are shared between the two nitrogen atoms","The bond breaks at three different points","It has three ionic charges"], correct: 1, explain: "A triple bond consists of three shared electron pairs (6 electrons total). This makes N₂ extremely stable and unreactive under normal conditions." },
+      { q: "Which intermolecular force is responsible for water's unusually high boiling point?", opts: ["London dispersion forces","Metallic bonding","Hydrogen bonding","Ionic attraction"], correct: 2, explain: "Hydrogen bonds between water molecules (O–H···O) are much stronger than typical intermolecular forces, requiring more energy to overcome — hence the high boiling point of 100°C." },
+      { q: "NaCl dissolves in water but not in oil. This is because…", opts: ["NaCl is too heavy for oil","Water is polar and interacts with ionic charges; oil is nonpolar and cannot","Oil has a higher boiling point","NaCl is covalently bonded"], correct: 1, explain: "'Like dissolves like' — polar water molecules surround and stabilise the Na⁺ and Cl⁻ ions. Nonpolar oil cannot interact with charged ions." }
+    ]
+  },
+
+  'chemistry-reactions': {
+    track: 'Chemistry · Lesson 4', title: 'Chemical Reactions', grade: 'Gr 9–10',
+    reading: `<h3>Old Bonds Break, New Bonds Form</h3>
+      <p>A chemical reaction occurs when reactants are converted into products through the breaking of existing chemical bonds and the formation of new ones. The atoms themselves are never created or destroyed — only rearranged. This is the <strong>Law of Conservation of Mass</strong>.</p>
+      <div class="callout" style="--accent:#34d399">💡 Antoine Lavoisier established the Law of Conservation of Mass in the 1780s by carefully weighing reactants and products in sealed containers. He was executed during the French Revolution in 1794 — a judge reportedly said "the Republic has no need of scientists."</div>
+      <p><strong>Balancing equations</strong> — a chemical equation must have the same number of each type of atom on both sides. Only coefficients (numbers in front of formulas) can be changed — never subscripts. For the combustion of methane:</p>
+      <div class="formula">CH₄ + 2O₂ → CO₂ + 2H₂O</div>
+      <p>Check: C(1=1), H(4=4), O(4=4) ✓</p>
+      <p><strong>Types of reactions:</strong></p>
+      <p><strong>Synthesis (combination):</strong> A + B → AB. Two or more substances combine into one. Example: 2Na + Cl₂ → 2NaCl.</p>
+      <p><strong>Decomposition:</strong> AB → A + B. One substance breaks into simpler ones. Example: 2H₂O → 2H₂ + O₂ (electrolysis of water).</p>
+      <p><strong>Single displacement:</strong> A + BC → AC + B. A more reactive element displaces a less reactive one. Example: Zn + CuSO₄ → ZnSO₄ + Cu.</p>
+      <p><strong>Double displacement:</strong> AB + CD → AD + CB. Ions switch partners — common in precipitation and neutralisation reactions. Example: AgNO₃ + NaCl → AgCl↓ + NaNO₃.</p>
+      <p><strong>Combustion:</strong> Fuel + O₂ → CO₂ + H₂O (+ energy). Complete combustion of hydrocarbons always produces carbon dioxide and water.</p>
+      <p><strong>Activation energy</strong> is the minimum energy needed to start a reaction. <strong>Catalysts</strong> lower the activation energy without being consumed — enzymes are biological catalysts that make life possible by speeding up reactions that would otherwise take millennia.</p>`,
+    quiz: [
+      { q: "Which law states that mass is conserved in a chemical reaction?", opts: ["Boyle's Law","Law of Conservation of Mass","Newton's Third Law","Hess's Law"], correct: 1, explain: "Lavoisier's Law of Conservation of Mass: atoms are rearranged but never created or destroyed, so total mass is unchanged." },
+      { q: "Balance: __H₂ + __O₂ → __H₂O. What are the coefficients?", opts: ["1,1,1","2,1,2","1,2,2","2,2,1"], correct: 1, explain: "2H₂ + O₂ → 2H₂O. Check: H(4=4), O(2=2) ✓. Never change subscripts to balance." },
+      { q: "2H₂O → 2H₂ + O₂ is an example of which reaction type?", opts: ["Synthesis","Combustion","Single displacement","Decomposition"], correct: 3, explain: "Decomposition: one compound breaks down into simpler substances. Water splits into hydrogen and oxygen gases." },
+      { q: "What does a catalyst do?", opts: ["Increases the activation energy","Is consumed in the reaction","Lowers the activation energy without being consumed","Changes the products formed"], correct: 2, explain: "Catalysts provide an alternative reaction pathway with lower activation energy, speeding up the reaction without being used up." },
+      { q: "AgNO₃ + NaCl → AgCl + NaNO₃ is which reaction type?", opts: ["Synthesis","Single displacement","Double displacement","Combustion"], correct: 2, explain: "Double displacement: the ions switch partners. Ag⁺ pairs with Cl⁻ and Na⁺ pairs with NO₃⁻ — typical of precipitation reactions." },
+      { q: "Complete combustion of a hydrocarbon always produces…", opts: ["CO and H₂","CO₂ and H₂O","C and H₂O","CO₂ and H₂"], correct: 1, explain: "Complete combustion: CₓHᵧ + O₂ → CO₂ + H₂O. Incomplete combustion (limited O₂) produces CO or soot (C) instead." },
+      { q: "In a single displacement reaction Zn + CuSO₄ → ZnSO₄ + Cu, why does Zn displace Cu?", opts: ["Zn has more protons","Zn is more reactive and loses electrons more readily than Cu","Cu is a gas","ZnSO₄ is insoluble"], correct: 1, explain: "Reactivity series: Zn is above Cu, meaning Zn more readily gives up electrons to Cu²⁺ ions, reducing them to Cu metal." }
+    ]
+  },
+
   'chemistry-atoms': {
     track: 'Chemistry · Lesson 1', title: "Atoms & Atomic Structure", grade: 'Gr 6–8',
     reading: `<h3>The Architecture of Matter</h3>
@@ -1280,6 +1560,14 @@ let currentQuizAnswered = [];
 let currentLesson = null;
 
 function openLesson(track, lessonId) {
+  // Block if this lesson is locked (not yet purchased from store)
+  const storeId = track + '-' + lessonId;
+  const storeItem = STORE_ITEMS.find(i => i.id === storeId);
+  if (storeItem && !xpState.unlocked.includes(storeId)) {
+    // Show store nudge instead
+    openStore();
+    return;
+  }
   const key = track+'-'+lessonId;
   const data = lessonData[key] || lessonData['physics-newton'];
   currentLesson = data;
@@ -1296,8 +1584,8 @@ function openLesson(track, lessonId) {
   // Quiz — progressive engine
   initQuiz(data.quiz);
 
-  // Ask Nova panel
-  document.getElementById('lesson-chat-messages').innerHTML = `<div class="msg"><div class="msg-avatar">🤖</div><div class="msg-bubble">I'm here to help you with <strong>${data.title}</strong>. Ask me anything about this lesson!</div></div>`;
+  // Reset lesson chat with fresh context for this lesson
+  resetLessonChat();
 
   // Reset tabs
   document.querySelectorAll('.modal-tab').forEach((b,i) => b.classList.toggle('active', i===0));
@@ -1404,114 +1692,170 @@ function renderResults() {
         <button onclick="switchModalTab('ask',document.querySelectorAll('.modal-tab')[2])" style="background:var(--panel);color:var(--text);border:1px solid var(--border);padding:11px 24px;border-radius:8px;font-weight:500;font-size:14px;cursor:pointer;font-family:var(--font-body)">💬 Ask Nova</button>
       </div>
     </div>`;
+  // Award XP for completing quiz
+  if (typeof xpAwardForQuiz === 'function') xpAwardForQuiz();
 }
 
 function checkModalAnswer() {} // legacy stub — no longer used
 
-// ── LESSON CHAT ──
-function sendLessonChat() {
-  const input = document.getElementById('lesson-chat-input');
-  const text = input.value.trim();
-  if (!text) return;
-  const msgs = document.getElementById('lesson-chat-messages');
-  const userMsg = document.createElement('div');
-  userMsg.className = 'msg user';
-  userMsg.innerHTML = `<div class="msg-avatar">🎓</div><div class="msg-bubble">${text}</div>`;
-  msgs.appendChild(userMsg);
-  msgs.scrollTop = msgs.scrollHeight;
-  input.value = '';
-  addToChat(msgs, generateLessonReply(text));
-}
+// ══════════════════════════════════════
+// NOVA — Keyword Chat Engine
+// ══════════════════════════════════════
 
-function generateLessonReply(text) {
-  const lesson = currentLesson;
+const mainChatHistory = [];
+const lessonChatHistory = [];
+
+function keywordFallback(text, lessonTitle) {
   const t = text.toLowerCase();
-  if (t.includes('explain') || t.includes('what') || t.includes('how')) return `Great question! In the context of <strong>${lesson ? lesson.title : 'this lesson'}</strong>, the key idea is to connect what you've read to the underlying principles. Which specific part would you like me to break down further — the core concept, a worked example, or a real-world application?`;
-  if (t.includes('example') || t.includes('show')) return `Here's a concrete example from <strong>${lesson ? lesson.title : 'this topic'}</strong>: imagine you encounter this in everyday life. The principles we covered apply directly — the formula gives you a framework to plug in real numbers. Want me to walk through a specific calculation?`;
-  if (t.includes('formula') || t.includes('equation')) return `The formula connects the key variables in this lesson. Always identify what you <em>know</em> and what you're <em>solving for</em>, then rearrange accordingly. Units matter — check they're consistent before computing. Want a step-by-step worked problem?`;
-  return `That's a thoughtful question about <strong>${lesson ? lesson.title : 'this topic'}</strong>. Science is about building mental models. Try to picture what's physically happening — draw a diagram if it helps. Then see if the equation or principle matches your intuition. What part feels least clear?`;
+  const responses = [
+    { match:['force','newton','f=ma','acceleration'], reply:"Newton's Second Law: <strong>F = ma</strong>. Force (N) = mass (kg) × acceleration (m/s²). A bigger force means more acceleration; a bigger mass means less. Want a worked example?" },
+    { match:['atom','proton','neutron','electron','nucleus'], reply:"Atoms have a nucleus (protons + neutrons) surrounded by electrons in shells. The number of protons = atomic number = which element it is. Valence electrons in the outermost shell control chemical behaviour." },
+    { match:['bond','ionic','covalent','metallic','electronegativity'], reply:"Ionic bonds transfer electrons (metal to non-metal). Covalent bonds share electrons (non-metals). The electronegativity difference determines which type forms — &gt;1.7 is ionic, &lt;0.5 is nonpolar covalent." },
+    { match:['ph','acid','base','neutral'], reply:"The pH scale runs 0–14. Below 7 is acidic, 7 is neutral, above 7 is basic. Each pH unit represents a <strong>10× change</strong> in H⁺ concentration — logarithmic, not linear." },
+    { match:['cell','organelle','mitochondria','chloroplast'], reply:"Cells are life's basic units. Mitochondria produce ATP, ribosomes build proteins, the nucleus holds DNA. Plant cells add chloroplasts for photosynthesis and a rigid cell wall." },
+    { match:['photosynthesis','chlorophyll','co2'], reply:"Photosynthesis: <strong>6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂</strong>. Light reactions in the thylakoids make ATP; the Calvin Cycle in the stroma uses that ATP to fix CO₂ into glucose." },
+    { match:['dna','gene','genetics','allele'], reply:"DNA is a double helix of base pairs: A–T and G–C. Genes are segments of DNA coding for proteins. Alleles are gene variants — dominant ones mask recessive ones in Mendelian inheritance." },
+    { match:['evolution','natural selection','adaptation','species'], reply:"Natural selection: heritable variation + differential reproductive success = adaptation over generations. Individuals better suited to their environment leave more offspring, shifting the population's traits." },
+    { match:['algorithm','big-o','sort','complexity'], reply:"Big-O describes how runtime scales with input size. O(1) is constant, O(log n) is excellent (binary search), O(n log n) is efficient sorting (Merge Sort), O(n²) slows fast (Bubble Sort)." },
+    { match:['binary','bit','byte','hex'], reply:"Binary is base-2 — only 0s and 1s. Each column is a power of 2: 1, 2, 4, 8… To convert 1011₂ to decimal: 8+0+2+1 = 11. Hex (base-16) packs 4 bits per digit for compact notation." },
+    { match:['network','internet','tcp','ip','dns'], reply:"The internet stacks protocols: IP routes packets, TCP ensures reliable delivery, DNS translates domain names to IP addresses, HTTP/S is the web layer. All four work together every time you load a page." },
+    { match:['energy','work','power','kinetic','potential'], reply:"Work = F × d × cos θ. KE = ½mv². GPE = mgh. Energy is conserved — it converts between forms but never disappears. Power = W/t, measured in Watts (J/s)." },
+    { match:['wave','frequency','amplitude','wavelength'], reply:"Wave speed = frequency × wavelength (v = fλ). Amplitude determines intensity. Transverse waves oscillate perpendicular to travel (light); longitudinal waves oscillate parallel (sound)." },
+    { match:['gravity','weight','mass'], reply:"Gravity is a force of attraction between masses. Near Earth's surface, g ≈ 9.8 m/s². Weight = mg (a force in Newtons), not the same as mass (in kg)." },
+    { match:['reaction','equation','balance','product','reactant'], reply:"Chemical equations must be balanced — atoms are conserved. Adjust coefficients (never subscripts) so each element's count matches on both sides." },
+    { match:['mole','stoichiometry','molar','avogadro'], reply:"One mole = 6.022 × 10²³ particles. Molar mass (g/mol) bridges atomic scale to lab scale. n = m ÷ M. Use balanced equation coefficients as molar ratios." },
+    { match:['logic gate','boolean','and gate','xor','not gate'], reply:"AND needs both inputs true. OR needs at least one. NOT flips the input. XOR outputs 1 when inputs differ. Combine them to build adders, memory, and entire CPUs." },
+    { match:['data structure','array','linked list','stack','queue','tree','hash'], reply:"Arrays give O(1) index access. Linked lists give O(1) head insert. Stacks are LIFO, queues are FIFO. Hash tables give O(1) average lookup. BSTs give O(log n) search." },
+    { match:['machine learning','neural network','ai','training','model'], reply:"Machine learning infers rules from data rather than following explicit instructions. Neural networks pass data through weighted layers; gradient descent adjusts weights to minimise prediction error." },
+    { match:['security','encryption','hash','password','cipher'], reply:"Hashing (SHA-256) maps data to a fixed fingerprint — one-way. Encryption (AES, RSA) is two-way with a key. MFA adds a second factor so a stolen password alone isn't enough." },
+    { match:['mitosis','meiosis','cell division','chromosome'], reply:"Mitosis: 1 diploid cell → 2 identical diploid daughters (growth and repair). Meiosis: 1 diploid cell → 4 unique haploid gametes. Crossing over in meiosis generates genetic diversity." },
+    { match:['ecosystem','food web','trophic','decomposer'], reply:"Energy flows through trophic levels — only ~10% transfers upward. Producers → primary consumers → secondary consumers → apex predators. Decomposers recycle nutrients back to the soil." },
+  ];
+  for (const r of responses) {
+    if (r.match.some(m => t.includes(m))) return r.reply;
+  }
+  return lessonTitle
+    ? `Great question about <strong>${lessonTitle}</strong>! Try asking about a specific concept — a formula, a term, or an idea you'd like explained differently.`
+    : "Great question! Try asking about something specific — for example: 'explain F = ma', 'what is DNA?', 'how does Big-O work?', or 'what are ionic bonds?'";
 }
 
-// ── MAIN CHAT ──
-function chatQuickReply(subject) {
-  const replies = {
-    physics: "Great choice! ⚛️ Physics is where it all starts — forces, energy, motion. You're currently on Lesson 4: Newton's Laws. Want me to explain F = ma with a worked example, or test your understanding with a question?",
-    chemistry: "Excellent — 🧪 Chemistry is the language of matter. Your Chemistry track is fully unlocked — you can start from Lesson 1 (Atoms) or jump to any topic. What are you most curious about: atomic structure, bonding, reactions, or acids/bases?",
-    biology: "🧬 Biology connects chemistry to life itself — fascinating stuff. Your Biology track is unlocked. Would you like to start with the Cell (Lesson 1), explore DNA and genetics, or learn about photosynthesis?",
-    cs: "💻 Computer Science — let's go! Your CS track covers binary, logic gates, algorithms, data structures, networking, operating systems, AI, and security. All eight lessons are unlocked. Where do you want to start: the fundamentals of binary, or jump straight to algorithms and Big-O?"
-  };
-  const msgs = document.getElementById('chat-messages');
-  const userMsg = document.createElement('div');
-  userMsg.className = 'msg user';
-  userMsg.innerHTML = `<div class="msg-avatar">🎓</div><div class="msg-bubble">${subject.charAt(0).toUpperCase()+subject.slice(1)}</div>`;
-  msgs.appendChild(userMsg);
-  document.querySelectorAll('.choice-pill').forEach(p => p.style.pointerEvents='none');
-  addBotMessage(replies[subject], null);
+async function callNovaAPI(messages) {
+  const lastMsg = messages[messages.length - 1]?.content || '';
+  return keywordFallback(lastMsg, currentLesson?.title);
 }
 
-function sendChat() {
+function appendUserMsg(container, text) {
+  const div = document.createElement('div');
+  div.className = 'msg user';
+  div.innerHTML = `<div class="msg-avatar">🎓</div><div class="msg-bubble">${text}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function showTyping(container) {
+  const div = document.createElement('div');
+  div.className = 'msg nova-typing';
+  div.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+function appendNovaMsg(container, html) {
+  const div = document.createElement('div');
+  div.className = 'msg';
+  div.style.animation = 'msgIn 0.3s ease';
+  div.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble">${html}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+// ── MAIN CHAT (homepage Nova) ──
+async function sendChat() {
   const input = document.getElementById('chat-input');
   const text = input.value.trim();
   if (!text) return;
-  const msgs = document.getElementById('chat-messages');
-  const userMsg = document.createElement('div');
-  userMsg.className = 'msg user';
-  userMsg.innerHTML = `<div class="msg-avatar">🎓</div><div class="msg-bubble">${text}</div>`;
-  msgs.appendChild(userMsg);
-  msgs.scrollTop = msgs.scrollHeight;
   input.value = '';
-  const t = text.toLowerCase();
-  let reply = "That's a great question! Science is all about curiosity. Could you tell me which subject you're studying — Physics, Chemistry, or Biology — so I can give you the most relevant answer?";
-  const responses = [
-    { match:['force','newton','f=ma','acceleration'], reply:"Newton's Second Law says <span class='highlight'>F = ma</span>. Force (N) = mass (kg) × acceleration (m/s²). A bigger force means more acceleration; a bigger mass means less — they trade off perfectly. Want a worked problem?" },
-    { match:['atom','proton','neutron','electron','nucleus'], reply:"Atoms have a nucleus (protons + neutrons) surrounded by electrons in shells. The number of protons = atomic number = which element it is. The outermost electrons — valence electrons — control bonding behavior. Which element would you like to explore?" },
-    { match:['ph','acid','base','neutral'], reply:"The pH scale runs 0–14. Below 7 = acidic (more H⁺), 7 = neutral (pure water), above 7 = basic. Each unit is a <span class='highlight'>10× change</span> in H⁺ concentration — so pH 3 is 100× more acidic than pH 5. Want to try a calculation?" },
-    { match:['cell','organelle','mitochondria','nucleus','chloroplast'], reply:"Cells are life's basic units. Eukaryotic cells have membrane-bound organelles: mitochondria make ATP, ribosomes build proteins, and the nucleus holds DNA. Plant cells add chloroplasts for photosynthesis. What would you like to dig into?" },
-    { match:['photosynthesis','chlorophyll','plant','co2','oxygen'], reply:"Photosynthesis: <span class='highlight'>6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂</span>. Light reactions in the thylakoids make ATP; the Calvin Cycle in the stroma uses that ATP to build glucose. The O₂ we breathe is a byproduct! Shall we go deeper?" },
-    { match:['dna','gene','genetics','allele','chromosome'], reply:"DNA is a double helix of base pairs (A-T, G-C). Genes are segments of DNA that code for proteins. Alleles are variants of a gene — dominant ones mask recessive ones in Mendelian inheritance. Want to work through a Punnett square?" },
-    { match:['energy','work','power','joule','kinetic'], reply:"Work = Force × Distance × cos(θ). Kinetic energy = ½mv². Potential energy = mgh. Energy is conserved — it changes form, never disappears. Power is the rate of doing work (Watts = J/s). What scenario are you trying to solve?" },
-    { match:['reaction','equation','balance','product','reactant'], reply:"Chemical equations must be balanced — atoms are conserved in reactions. Count atoms on each side and adjust coefficients (not subscripts). Reaction types include synthesis, decomposition, single/double displacement, and combustion. Which type are you working on?" },
-    { match:['binary','bit','byte','hex','hexadecimal','base-2'], reply:"Binary is base-2 — only digits 0 and 1. Each column is a power of 2: 1, 2, 4, 8, 16… To convert <span class='highlight'>1011₂</span> to decimal: 8+0+2+1 = 11. Hexadecimal (base-16) packs 4 bits per digit, making long binary strings more readable. Want to practice a conversion?" },
-    { match:['algorithm','big-o','sort','search','complexity','runtime'], reply:"Big-O notation describes how an algorithm scales with input size. <span class='highlight'>O(log n)</span> is excellent (binary search), <span class='highlight'>O(n log n)</span> is great for sorting (Merge Sort, Quick Sort), and <span class='highlight'>O(n²)</span> gets slow fast (Bubble Sort). The sorting visualizer lab shows this beautifully — want to try it?" },
-    { match:['logic gate','boolean','and','xor','not gate','circuit'], reply:"Logic gates are the physical building blocks of computation. <span class='highlight'>AND</span> needs both inputs true; <span class='highlight'>OR</span> needs at least one; <span class='highlight'>XOR</span> outputs 1 when inputs differ. Combine them and you can build adders, memory, and eventually a full CPU. Try the Logic Gate lab to wire up your own circuits!" },
-    { match:['data structure','array','linked list','stack','queue','tree','hash'], reply:"Data structures organize information for efficient access. Arrays offer O(1) index access; linked lists allow O(1) insert/delete at head; stacks are LIFO; queues are FIFO; binary search trees give O(log n) search. Choosing the right structure is half of algorithm design. Which one are you studying?" },
-    { match:['network','internet','ip','tcp','dns','http','protocol'], reply:"The internet is layers of protocols. <span class='highlight'>IP</span> routes packets between machines; <span class='highlight'>TCP</span> ensures reliable delivery; <span class='highlight'>DNS</span> translates domain names to IPs; <span class='highlight'>HTTP/S</span> is the web layer on top. When you type a URL, all four kick in within milliseconds. Which layer would you like to explore?" },
-    { match:['machine learning','neural network','ai','training','model','deep learning'], reply:"Machine learning lets computers learn patterns from data without explicit programming. A neural network passes data through layers of weighted nodes — training adjusts the weights to minimize error. <span class='highlight'>Gradient descent</span> is the key optimization algorithm. It's the same math behind every large language model. Want to dig into how training works?" },
-    { match:['security','encryption','hash','cybersecu','password','attack','cipher'], reply:"Cybersecurity is about trust and verification. <span class='highlight'>Hashing</span> (e.g. SHA-256) maps data to a fixed fingerprint — one-way, so passwords are stored as hashes, not plaintext. <span class='highlight'>Encryption</span> (AES, RSA) is two-way — only the key-holder decodes it. The key insight: security is math, not magic. What aspect interests you most?" },
-  ];
-  for (const r of responses) { if (r.match.some(m => t.includes(m))) { reply = r.reply; break; } }
-  addBotMessage(reply, null);
+  input.disabled = true;
+
+  const msgs = document.getElementById('chat-messages');
+  appendUserMsg(msgs, text);
+  mainChatHistory.push({ role: 'user', content: text });
+
+  const typing = showTyping(msgs);
+  const reply = await callNovaAPI(mainChatHistory);
+  typing.remove();
+
+  appendNovaMsg(msgs, reply);
+  mainChatHistory.push({ role: 'assistant', content: reply });
+  input.disabled = false;
+  input.focus();
 }
 
+// ── QUICK REPLY PILLS (subject selection) ──
+async function chatQuickReply(subject) {
+  const labels = { physics:'⚛️ Physics', chemistry:'🧪 Chemistry', biology:'🧬 Biology', cs:'💻 Computer Science' };
+  const msgs = document.getElementById('chat-messages');
+  document.querySelectorAll('.choice-pill').forEach(p => p.style.pointerEvents = 'none');
+
+  appendUserMsg(msgs, labels[subject] || subject);
+  const text = `I want to study ${labels[subject] || subject}`;
+  mainChatHistory.push({ role: 'user', content: text });
+
+  const typing = showTyping(msgs);
+  const reply = await callNovaAPI(mainChatHistory);
+  typing.remove();
+
+  appendNovaMsg(msgs, reply);
+  mainChatHistory.push({ role: 'assistant', content: reply });
+}
+
+// ── LESSON CHAT (Ask Nova tab in lesson modal) ──
+async function sendLessonChat() {
+  const input = document.getElementById('lesson-chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.disabled = true;
+
+  const msgs = document.getElementById('lesson-chat-messages');
+  appendUserMsg(msgs, text);
+  lessonChatHistory.push({ role: 'user', content: text });
+
+  // Build lesson context for system prompt
+  const lessonContext = currentLesson
+    ? `The student is currently studying: "${currentLesson.title}" (${currentLesson.track}, ${currentLesson.grade || ''}).
+Here is the lesson content they have read:
+${currentLesson.reading.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 800)}
+Focus your answers on this lesson's concepts. If they ask about something outside this lesson, briefly answer but guide them back.`
+    : '';
+
+  const typing = showTyping(msgs);
+  const reply = await callNovaAPI(lessonChatHistory, lessonContext);
+  typing.remove();
+
+  appendNovaMsg(msgs, reply);
+  lessonChatHistory.push({ role: 'assistant', content: reply });
+  input.disabled = false;
+  input.focus();
+}
+
+// Reset lesson chat history when a new lesson opens
+function resetLessonChat() {
+  lessonChatHistory.length = 0;
+  const msgs = document.getElementById('lesson-chat-messages');
+  if (msgs) msgs.innerHTML = `<div class="msg"><div class="msg-avatar">🤖</div><div class="msg-bubble">I'm here to help you with <strong>${currentLesson ? currentLesson.title : 'this lesson'}</strong>. Ask me anything!</div></div>`;
+}
+
+// ── LEGACY stubs (no longer used but kept so existing onclick refs don't break) ──
 function addBotMessage(html, pills) {
   const msgs = document.getElementById('chat-messages');
-  const typing = document.createElement('div');
-  typing.className = 'msg';
-  typing.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
-  msgs.appendChild(typing); msgs.scrollTop = msgs.scrollHeight;
-  setTimeout(() => {
-    typing.remove();
-    const msg = document.createElement('div');
-    msg.className = 'msg';
-    let pillHtml = pills ? `<div class="choice-pills">${pills.map(p=>`<span class="choice-pill">${p}</span>`).join('')}</div>` : '';
-    msg.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble">${html}${pillHtml}</div>`;
-    msgs.appendChild(msg); msgs.scrollTop = msgs.scrollHeight;
-  }, 1200);
+  appendNovaMsg(msgs, html);
 }
-
 function addToChat(container, html) {
-  const typing = document.createElement('div');
-  typing.className = 'msg';
-  typing.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
-  container.appendChild(typing); container.scrollTop = container.scrollHeight;
-  setTimeout(() => {
-    typing.remove();
-    const msg = document.createElement('div');
-    msg.className = 'msg';
-    msg.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble">${html}</div>`;
-    container.appendChild(msg); container.scrollTop = container.scrollHeight;
-  }, 1100);
+  appendNovaMsg(container, html);
 }
+function generateLessonReply() { return ''; }
 
 // ══════════════════════════════════
 // LAB SIMULATIONS
@@ -2115,6 +2459,478 @@ function updateGateOutput(){
   });
   html+='</div>'; tt.innerHTML=html;
 }
+// ══════════════════════════════════════
+// XP SYSTEM
+// ══════════════════════════════════════
+
+// XP thresholds per level (cumulative XP needed to reach that level)
+const XP_PER_LEVEL = [0, 100, 250, 450, 700, 1000, 1350, 1750, 2200, 2700, 3250];
+const MAX_LEVEL = XP_PER_LEVEL.length - 1;
+
+// Locked lessons available in the store
+// cost = XP needed to unlock
+const STORE_ITEMS = [
+  { id:'physics-work',        label:'Work & Energy',            track:'⚛️ Physics · Lesson 5',  cost: 80,  accent:'#4fc3f7' },
+  { id:'physics-waves',       label:'Waves & Oscillations',     track:'⚛️ Physics · Lesson 6',  cost: 120, accent:'#4fc3f7' },
+  { id:'physics-electricity', label:'Electricity & Magnetism',  track:'⚛️ Physics · Lesson 7',  cost: 200, accent:'#4fc3f7' },
+  { id:'chemistry-stoich',    label:'Stoichiometry',            track:'🧪 Chemistry · Lesson 5', cost: 100, accent:'#34d399' },
+  { id:'chemistry-thermo',    label:'Thermochemistry',          track:'🧪 Chemistry · Lesson 7', cost: 220, accent:'#34d399' },
+  { id:'biology-ecology',     label:'Ecosystems & Food Webs',   track:'🧬 Biology · Lesson 5',  cost: 110, accent:'#a78bfa' },
+  { id:'biology-mitosis',     label:'Mitosis & Meiosis',        track:'🧬 Biology · Lesson 6',  cost: 230, accent:'#a78bfa' },
+  { id:'cs-datastructs',      label:'Data Structures',          track:'💻 CS · Lesson 4',        cost: 90,  accent:'#fb923c' },
+  { id:'cs-networking',       label:'Networking & the Internet',track:'💻 CS · Lesson 5',        cost: 115, accent:'#fb923c' },
+  { id:'cs-os',               label:'Operating Systems',        track:'💻 CS · Lesson 6',        cost: 140, accent:'#fb923c' },
+  { id:'cs-ai',               label:'Intro to AI & Machine Learning', track:'💻 CS · Lesson 7',        cost: 200, accent:'#fb923c' },
+  { id:'cs-security',         label:'Cybersecurity',            track:'💻 CS · Lesson 8',        cost: 250, accent:'#fb923c' },
+];
+
+// XP rewards
+const XP_REWARDS = {
+  quiz_perfect:  60,   // 100% score
+  quiz_great:    45,   // ≥ 70%
+  quiz_pass:     25,   // ≥ 50%
+  quiz_attempt:  10,   // < 50% — still rewarded for trying
+  read_lesson:   15,   // scrolled to bottom of reading tab
+  first_time:    20,   // bonus for first time completing a lesson
+};
+
+// ── SAFE STORAGE LAYER (falls back to memory if localStorage blocked) ──
+const _memStore = {};
+const _storage = {
+  getItem(k) { try { return localStorage.getItem(k); } catch { return _memStore[k] || null; } },
+  setItem(k, v) { try { localStorage.setItem(k, v); } catch {} _memStore[k] = v; }
+};
+
+function loadXP() {
+  try {
+    return JSON.parse(_storage.getItem('sciquest_xp') || '{"total":0,"spent":0,"unlocked":[],"completed":[]}');
+  } catch { return { total:0, spent:0, unlocked:[], completed:[] }; }
+}
+function saveXP(state) {
+  _storage.setItem('sciquest_xp', JSON.stringify(state));
+}
+
+let xpState = loadXP();
+
+function getAvailableXP() { return xpState.total - xpState.spent; }
+
+function currentLevel(totalXP) {
+  for (let i = MAX_LEVEL; i >= 0; i--) {
+    if (totalXP >= XP_PER_LEVEL[i]) return i;
+  }
+  return 0;
+}
+
+function xpForNextLevel(level) {
+  return level >= MAX_LEVEL ? XP_PER_LEVEL[MAX_LEVEL] : XP_PER_LEVEL[level + 1];
+}
+
+// ── UPDATE NAV BAR ──
+function refreshXPBar() {
+  const total = xpState.total;
+  const lvl = currentLevel(total);
+  const thisLevelXP = XP_PER_LEVEL[lvl];
+  const nextLevelXP = lvl < MAX_LEVEL ? XP_PER_LEVEL[lvl + 1] : XP_PER_LEVEL[MAX_LEVEL];
+  const pct = lvl >= MAX_LEVEL ? 100 : Math.round((total - thisLevelXP) / (nextLevelXP - thisLevelXP) * 100);
+
+  document.getElementById('nav-level').textContent = `Lv ${lvl}`;
+  document.getElementById('nav-xp-fill').style.width = pct + '%';
+  document.getElementById('nav-xp-label').textContent =
+    lvl >= MAX_LEVEL ? 'MAX LEVEL' : `${total - thisLevelXP} / ${nextLevelXP - thisLevelXP} XP`;
+}
+
+// ── AWARD XP ──
+function awardXP(amount, reason) {
+  const prevLevel = currentLevel(xpState.total);
+  xpState.total += amount;
+  saveXP(xpState);
+  refreshXPBar();
+  refreshLockedCards();
+  showXPToast(amount, reason);
+
+  const newLevel = currentLevel(xpState.total);
+  if (newLevel > prevLevel) {
+    setTimeout(() => showLevelUp(newLevel), 1200);
+  }
+}
+
+// ── TOAST ──
+let toastTimer = null;
+function showXPToast(amount, reason) {
+  const toast = document.getElementById('xp-toast');
+  document.getElementById('xp-toast-amount').textContent = `+${amount} XP`;
+  document.getElementById('xp-toast-text').textContent = reason;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ── LEVEL UP SPLASH ──
+function showLevelUp(level) {
+  document.getElementById('levelup-num').textContent = `Level ${level}`;
+  document.getElementById('levelup-sub').textContent =
+    `You've unlocked more purchasing power — ${getAvailableXP()} XP to spend in the store!`;
+  document.getElementById('levelup-splash').classList.add('show');
+}
+
+// ── STORE ──
+function openStore() {
+  document.getElementById('store-xp-display').textContent = getAvailableXP() + ' XP';
+  const grid = document.getElementById('store-grid');
+  grid.innerHTML = '';
+  STORE_ITEMS.forEach(item => {
+    const isUnlocked = xpState.unlocked.includes(item.id);
+    const canAfford = getAvailableXP() >= item.cost;
+    const div = document.createElement('div');
+    div.className = 'store-card' + (isUnlocked ? ' unlocked' : !canAfford ? ' cant-afford' : '');
+    div.style.setProperty('--accent', item.accent);
+    div.innerHTML = `
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-bottom:6px">${item.track}</div>
+      <h4>${item.label}</h4>
+      <p>${isUnlocked ? 'You\'ve unlocked this lesson. Click it in the course list to begin.' : canAfford ? 'You have enough XP to unlock this lesson.' : `Earn ${item.cost - getAvailableXP()} more XP to unlock.`}</p>
+      <div class="store-cost">
+        <span class="store-price">${isUnlocked ? '' : '⭐ ' + item.cost + ' XP'}</span>
+        ${isUnlocked
+          ? '<span class="store-unlocked-tag">✓ Unlocked</span>'
+          : `<button class="store-buy-btn" ${!canAfford ? 'disabled' : ''} onclick="purchaseLesson('${item.id}')">Unlock</button>`}
+      </div>`;
+    grid.appendChild(div);
+  });
+  openModal('store-modal');
+}
+
+function purchaseLesson(id) {
+  const item = STORE_ITEMS.find(i => i.id === id);
+  if (!item) return;
+  if (xpState.unlocked.includes(id)) return;
+  if (getAvailableXP() < item.cost) return;
+
+  xpState.spent += item.cost;
+  xpState.unlocked.push(id);
+  saveXP(xpState);
+
+  // Physically unlock the card in the DOM
+  refreshLockedCards();
+  refreshXPBar();
+
+  // Refresh store UI
+  openStore();
+  showXPToast(-item.cost, `${item.label} unlocked! 🎉`);
+  document.getElementById('xp-toast-amount').textContent = `-${item.cost} XP`;
+  document.getElementById('xp-toast-amount').style.color = 'var(--rose)';
+  setTimeout(() => {
+    document.getElementById('xp-toast-amount').style.color = 'var(--amber)';
+  }, 3100);
+}
+
+// ── UNLOCK CARDS IN DOM ──
+function refreshLockedCards() {
+  xpState.unlocked.forEach(id => {
+    const item = STORE_ITEMS.find(i => i.id === id);
+    if (!item) return;
+    const trackKey = id.split('-')[0];
+    const lessonKey = id.split('-').slice(1).join('-');
+
+    // Find card by data-lesson-id attribute (most reliable)
+    const card = document.querySelector(`.lesson-card[data-lesson-id="${id}"]`);
+    if (!card) return;
+
+    card.classList.remove('locked');
+    card.style.cursor = 'pointer';
+    card.style.opacity = '';
+    card.onclick = () => openLesson(trackKey, lessonKey);
+    const status = card.querySelector('.lcard-status');
+    if (status && status.textContent === '🔒') status.textContent = '🔓';
+  });
+}
+
+// ── HOOK INTO QUIZ RESULTS ──
+// Called by renderResults() at the end via xpAwardForQuiz()
+function xpAwardForQuiz() {
+  const { score, questions } = quizState;
+  const total = questions.length;
+  const pct = Math.round(score / total * 100);
+  const lessonKey = currentLessonTrack ? `${currentLessonTrack}-${currentLessonId}` : null;
+  const isFirstTime = lessonKey && !xpState.completed.includes(lessonKey);
+
+  let xp = pct === 100 ? XP_REWARDS.quiz_perfect
+          : pct >= 70  ? XP_REWARDS.quiz_great
+          : pct >= 50  ? XP_REWARDS.quiz_pass
+          :               XP_REWARDS.quiz_attempt;
+
+  let reason = pct === 100 ? 'Perfect score! 🏆'
+             : pct >= 70  ? 'Great result!'
+             : pct >= 50  ? 'Quiz complete'
+             :               'Good effort — keep going!';
+
+  if (isFirstTime) {
+    xp += XP_REWARDS.first_time;
+    reason += ' (+bonus first time)';
+    xpState.completed.push(lessonKey);
+    saveXP(xpState);
+
+    // Mark the lesson card as completed ✅
+    if (lessonKey) {
+      const card = document.querySelector(`.lesson-card[data-lesson-id="${lessonKey}"]`) ||
+        (() => {
+          // For non-store lessons, find by track panel + lesson position
+          const panel = document.getElementById('track-' + currentLessonTrack);
+          if (!panel || !currentLesson) return null;
+          return [...panel.querySelectorAll('.lesson-card h4')]
+            .find(h => h.textContent.trim() === currentLesson.title)?.closest('.lesson-card');
+        })();
+      if (card) {
+        const status = card.querySelector('.lcard-status');
+        if (status) status.textContent = '✅';
+      }
+    }
+  }
+
+  setTimeout(() => awardXP(xp, reason), 600);
+}
+
+// track which lesson is open
+let currentLessonTrack = '';
+let currentLessonId = '';
+const _origOpenLesson = openLesson;
+openLesson = function(track, lessonId) {
+  currentLessonTrack = track;
+  currentLessonId = lessonId;
+  _origOpenLesson(track, lessonId);
+
+  // Award XP for reading — watch scroll depth in reading pane
+  setTimeout(() => {
+    const readPane = document.getElementById('pane-read');
+    if (!readPane) return;
+    let awarded = false;
+    const onScroll = () => {
+      if (awarded) return;
+      const el = readPane;
+      if (el.scrollTop + el.clientHeight >= el.scrollHeight - 40) {
+        awarded = true;
+        const key = `${track}-${lessonId}`;
+        const isNew = !xpState.completed.includes('read-'+key);
+        if (isNew) {
+          xpState.completed.push('read-'+key);
+          saveXP(xpState);
+          awardXP(XP_REWARDS.read_lesson, 'Lesson read! 📖');
+        }
+      }
+    };
+    readPane.addEventListener('scroll', onScroll);
+  }, 400);
+};
+
+// ══════════════════════════════════════
+// AUTH SYSTEM (localStorage-backed)
+// ══════════════════════════════════════
+
+const AVATAR_COLORS = ['#4fc3f7','#34d399','#a78bfa','#fb923c','#fb7185','#fbbf24','#60a5fa','#f472b6'];
+
+function getAccounts() {
+  try { return JSON.parse(_storage.getItem('sciquest_accounts') || '{}'); } catch { return {}; }
+}
+function saveAccounts(a) { _storage.setItem('sciquest_accounts', JSON.stringify(a)); }
+function getCurrentUser() {
+  try { return JSON.parse(_storage.getItem('sciquest_current') || 'null'); } catch { return null; }
+}
+function setCurrentUser(u) { _storage.setItem('sciquest_current', JSON.stringify(u)); }
+
+function hashPass(p) {
+  // Simple deterministic hash (not cryptographic — this is client-only localStorage demo)
+  let h = 0;
+  for (let i = 0; i < p.length; i++) { h = Math.imul(31, h) + p.charCodeAt(i) | 0; }
+  return h.toString(36);
+}
+
+function avatarColor(username) {
+  let n = 0;
+  for (let c of username) n += c.charCodeAt(0);
+  return AVATAR_COLORS[n % AVATAR_COLORS.length];
+}
+
+function initials(name) {
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || '?';
+}
+
+function switchLoginTab(tab, btn) {
+  document.querySelectorAll('.login-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.login-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('lpane-' + tab).classList.add('active');
+}
+
+function showLoginError(pane, msg) {
+  const el = document.getElementById(pane + '-error');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+function doSignIn() {
+  const user = document.getElementById('signin-user').value.trim();
+  const pass = document.getElementById('signin-pass').value;
+  if (!user || !pass) { showLoginError('signin', 'Please enter your username and password.'); return; }
+  const accounts = getAccounts();
+  const found = accounts[user.toLowerCase()];
+  if (!found || found.hash !== hashPass(pass)) {
+    showLoginError('signin', 'Username or password is incorrect.');
+    return;
+  }
+  loginUser(found);
+}
+
+function doSignUp() {
+  const name = document.getElementById('signup-name').value.trim();
+  const user = document.getElementById('signup-user').value.trim().toLowerCase();
+  const pass = document.getElementById('signup-pass').value;
+  const grade = document.getElementById('signup-grade').value;
+  if (!name) { showLoginError('signup', 'Please enter your display name.'); return; }
+  if (!user || user.length < 3) { showLoginError('signup', 'Username must be at least 3 characters.'); return; }
+  if (!/^[a-z0-9_]+$/.test(user)) { showLoginError('signup', 'Username can only contain letters, numbers, and underscores.'); return; }
+  if (!pass || pass.length < 6) { showLoginError('signup', 'Password must be at least 6 characters.'); return; }
+  if (!grade) { showLoginError('signup', 'Please select your grade level.'); return; }
+  const accounts = getAccounts();
+  if (accounts[user]) { showLoginError('signup', 'That username is already taken.'); return; }
+  const profile = { username: user, name, hash: hashPass(pass), grade, color: avatarColor(user), joined: Date.now() };
+  accounts[user] = profile;
+  saveAccounts(accounts);
+  loginUser(profile);
+}
+
+function doGuest() {
+  loginUser({ username: 'guest', name: 'Guest', grade: 'all', color: '#6b84a8', guest: true });
+}
+
+function loginUser(profile) {
+  setCurrentUser(profile);
+  // Load this user's XP from their profile key
+  const key = 'sciquest_xp_' + profile.username;
+  try { xpState = JSON.parse(_storage.getItem(key) || '{"total":0,"spent":0,"unlocked":[],"completed":[]}'); }
+  catch { xpState = { total:0, spent:0, unlocked:[], completed:[] }; }
+
+  window._xpKey = key;
+
+  // Hide login screen, show app
+  const loginEl = document.getElementById('login-screen');
+  const appEl = document.getElementById('main-app');
+  appEl.style.removeProperty('display');
+  loginEl.style.transition = 'opacity 0.5s ease';
+  loginEl.style.opacity = '0';
+  loginEl.style.pointerEvents = 'none';
+  setTimeout(() => { loginEl.style.display = 'none'; }, 550);
+
+  // Update nav chip
+  updateUserChip(profile);
+
+  // Auto-apply grade filter if set
+  if (profile.grade && profile.grade !== 'all') {
+    const gradeBtn = [...document.querySelectorAll('.grade-btn')].find(b => {
+      const oc = b.getAttribute('onclick') || '';
+      return oc.includes(`'${profile.grade}'`);
+    });
+    if (gradeBtn) filterGrade(profile.grade, gradeBtn);
+  }
+
+  refreshXPBar();
+  refreshLockedCards();
+  // Re-init stars now that canvas is properly visible
+  setTimeout(() => { initStars(); }, 50);
+}
+
+function updateUserChip(profile) {
+  document.getElementById('user-avatar').textContent = initials(profile.name);
+  document.getElementById('user-avatar').style.background = profile.color;
+  document.getElementById('user-chip-name').textContent = profile.guest ? 'Guest' : profile.name.split(' ')[0];
+  document.getElementById('dd-name').textContent = profile.name;
+  document.getElementById('dd-sub').textContent = profile.guest ? 'Playing as guest — sign up to save progress' : `@${profile.username}`;
+}
+
+function toggleUserDropdown() {
+  document.getElementById('user-dropdown').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#user-chip') && !e.target.closest('#user-dropdown')) {
+    document.getElementById('user-dropdown').classList.remove('open');
+  }
+});
+
+function resetProgress() {
+  const user = getCurrentUser();
+  if (!user) return;
+  const name = user.guest ? 'Guest' : user.name;
+  if (!confirm(`Reset all XP, unlocked lessons, and quiz progress for ${name}? This cannot be undone.`)) return;
+
+  // Clear XP state
+  xpState = { total: 0, spent: 0, unlocked: [], completed: [] };
+  saveXP(xpState);
+
+  // Re-lock all store lesson cards
+  document.querySelectorAll('.lesson-card[data-lesson-id]').forEach(card => {
+    card.classList.add('locked');
+    card.style.cursor = '';
+    card.style.opacity = '';
+    card.onclick = null;
+    const status = card.querySelector('.lcard-status');
+    if (status && status.textContent === '🔓') status.textContent = '🔒';
+  });
+
+  // Reset ✅ completed cards back to 🔓
+  document.querySelectorAll('.lesson-card').forEach(card => {
+    const status = card.querySelector('.lcard-status');
+    if (status && status.textContent === '✅') status.textContent = '🔓';
+  });
+
+  refreshXPBar();
+  showXPToast(0, 'Progress reset ✓');
+  document.getElementById('xp-toast-amount').textContent = '↺ Reset';
+  document.getElementById('xp-toast-amount').style.color = 'var(--text-dim)';
+  setTimeout(() => {
+    document.getElementById('xp-toast-amount').style.color = 'var(--amber)';
+  }, 3100);
+}
+
+function doLogout() {
+  setCurrentUser(null);
+  xpState = { total:0, spent:0, unlocked:[], completed:[] };
+  window._xpKey = null;
+  document.getElementById('user-dropdown').classList.remove('open');
+  const loginEl = document.getElementById('login-screen');
+  const appEl = document.getElementById('main-app');
+  loginEl.style.display = '';
+  loginEl.style.opacity = '1';
+  loginEl.style.pointerEvents = 'auto';
+  appEl.style.display = 'none';
+  document.getElementById('signin-user').value = '';
+  document.getElementById('signin-pass').value = '';
+}
+
+function showProfileStats() {
+  const user = getCurrentUser();
+  if (!user) return;
+  const lvl = currentLevel(xpState.total);
+  const lessons = xpState.completed.filter(k => !k.startsWith('read-')).length;
+  alert(`📊 ${user.name}'s Stats\n\nLevel: ${lvl}\nTotal XP: ${xpState.total}\nAvailable XP: ${getAvailableXP()}\nLessons completed: ${lessons}\nLessons unlocked from store: ${xpState.unlocked.length}`);
+}
+
+// Override saveXP to scope by user
+const _origSaveXP = saveXP;
+saveXP = function(state) {
+  const key = window._xpKey || 'sciquest_xp';
+  _storage.setItem(key, JSON.stringify(state));
+};
+
+// ── INIT — runs after all functions defined ──
+(function init() {
+  try {
+    initStars();
+    const user = getCurrentUser();
+    if (user) loginUser(user);
+  } catch(e) {
+    console.warn('SciQuest init error:', e);
+  }
+})();
+
+} catch(e) { console.error("SciQuest fatal:", e); }
 </script>
 </body>
 </html>
